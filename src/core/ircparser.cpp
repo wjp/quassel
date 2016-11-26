@@ -189,6 +189,12 @@ void IrcParser::processNetworkIncoming(NetworkDataEvent *e)
 
                 msg = decrypt(net, target, msg);
 
+                // When quassel is behind a proxy, a message may appear with our nick as sender.
+                // Work that around
+                if (net->myNick() == senderNick) {
+                    target = params[0];
+                }
+
                 events << new IrcEventRawMessage(EventManager::IrcEventRawPrivmsg, net, msg, prefix, target, e->timestamp());
             }
         }
